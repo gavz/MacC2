@@ -47,7 +47,7 @@ Usage: python3 macro_generatory.py -s [C2 Server IP/domain] -p [C2 Server Port]
 
 After you receive a connection, you can use the "help" command on the server to get a list of built-in commands available. You can enter one of these commands. After entering a command and pressing Enter, the command is queued up (allows you to enter multiple commands to be executed by the client). Once you type "done" and hit Enter, all of the queued commands will be sent to the client for execution.
 
-![Image](pic7.jpg)
+![Image](pic7.png)
 
 Each command is pretty straightforward. The command options that are not OPSEC safe (i.e., command line executions or cause pop ups) are also flagged in red from the help menu.
 
