@@ -3,6 +3,10 @@ MacC2 is a macOS post exploitation tool written in python that uses Objective C 
 
 This tool consists of three scripts: a server script, a client script, and a macro generator.
 
+Since the MacC2 server uses the aiohttp library for communications, you will need to install aiohttp first:
+
+_*pip install aiohttp (if you encounter an error ensure that pip is pointing to python3, since aiohttp is a python3 library): python3 -m pip install --upgrade --force pip*_
+
 More info below:
 
 **_On C2 Server:_**
