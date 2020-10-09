@@ -69,7 +69,10 @@ The operator flow after setting everything up and getting a callback is:
 
 - enter "done" and press enter to have the queued commands sent to the client for execution
 
-- NOTE: The default sleep is 10 seconds. The operator can change that by using the sleep [numberofseconds] command.
+- **NOTE: The default sleep is 10 seconds. The operator can change that by using the sleep [numberofseconds] command.**
+
+- **NOTE: The MacC2 server currently does not have a way to conveniently switch between sessions when multiple clients connect. Instead the server auto switches between sessions after each command executed. So the operator will need to pay attention to the IP in the connection to know which session is being interacted with.
+
 
 ----------
 
