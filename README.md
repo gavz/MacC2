@@ -10,37 +10,34 @@ More info below:
 
 If you do not have your own cert, you can use the following to generate a self signed cert:
 
--openssl req -new -newkey rsa:2048 -nodes -out ca.csr -keyout ca.key
-![Image](pic1.jpg) 
+- 1: openssl req -new -newkey rsa:2048 -nodes -out ca.csr -keyout ca.key
 
--openssl x509 -trustout -signkey ca.key -days 365 -req -in ca.csr -out ca.pem
-![Image](pic2.jpg)
+- 2: openssl x509 -trustout -signkey ca.key -days 365 -req -in ca.csr -out ca.pem
 
 _*note: the server script is hard-coded to use ca.pem and ca.key, so keep these names the same for now, or change the code appropriately_
 
-2. Use macro_generator.py to create the MacC2 scripts with the server's IP/domain and port. macro_generator.py also builds a macro (macro.txt) that you can copy and paste into an MS Office document:
+2. Use macro_generator.py to create the MacC2 scripts with the server's IP/domain and port. macro_generator.py also builds a macro (macro.txt) that uses hex encoding to run MacC2. You can copy and paste the contents of macro.text into an MS Office document:
 
 Usage: python3 macro_generatory.py -s [C2 Server IP/domain] -p [C2 Server Port]
 
 -Example:
-![Image](pic3.png)
 
-![Image](generatorpic.png)
+![Image](pic3.png)
 
 3. Start the generated MacC2_server.py script to listen for a connection:
 
-![Image](pic4.jpg)
+![Image](pic4.png)
 
 
 **_On Client Side (the target mac host):_**
 1. If you desire to not be limited by the mac sandbox and want more functionality, you may opt to copy the MacC2_client.py script to the client (assuming you have access).
 
-2. On the client, run the MacC2_client.py script:
-![Image](pic5.jpg)
+2. On the client, run the MacC2_client.py script: "% python MacC2_client.py"
+![Image](pic5.png)
 
 3. On the server, you will see an inbound connection. Example below:
 
-![Image](pic6.jpg)
+![Image](pic6.png)
 
 ***Using MacC2***
 
