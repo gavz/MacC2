@@ -1,5 +1,5 @@
 # MacC2
-MacC2 is a macOS post exploitation tool written in python that uses Objective C calls or python libraries as opposed to command line executions. I wrote this tool as a way for defenders and offensive security researchers to more easily understand the inner workings of python-based post exploitation tools on macOS.
+MacC2 is a macOS post exploitation tool written in python that uses Objective C calls or python libraries as opposed to command line executions. I wrote this tool as a way for defenders and offensive security researchers to more easily understand the inner workings of python-based post exploitation tools on macOS. Apple plans to eventually remove scripting runtimes from base macOS installs, but it appears that python is still included by default on base installs of Big Sur. 
 
 This tool consists of three scripts: a server script, a client script, and a macro generator.
 
