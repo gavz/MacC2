@@ -31,9 +31,9 @@ If you opt to not use docker, you can set up the server locally using the steps 
 
 Since the MacC2 server uses the aiohttp library for communications, you will need to install aiohttp first:
 
-> _*pip install aiohttp **(if you encounter an error ensure that pip is pointing to python3, since aiohttp is a python3 library)**: 
+> pip install aiohttp **(if you encounter an error ensure that pip is pointing to python3, since aiohttp is a python3 library)**: 
 
-> python3 -m pip install --upgrade --force pip*_
+> python3 -m pip install --upgrade --force pip
 
 **_On C2 Server:_**
 1. Set up ssl (note: use a key size of at least 2048)
