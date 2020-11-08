@@ -1,15 +1,38 @@
 # MacC2
 MacC2 is a macOS post exploitation tool written in python that uses Objective C calls or python libraries as opposed to command line executions. **I wrote this tool to aid purple team exercises aimed at building detections for python-based post exploitation frameworks on macOS**. Apple plans to eventually remove scripting runtimes from base macOS installs, but it appears that python is still included by default on base installs of Big Sur. 
 
-This tool consists of three scripts: a server script, a client script, and a macro generator.
+You can set up the server locally or you can use the docker setup I have included in this repo. Instructions below:
+
+-----
+**_Docker Instructions_**
+
+***If you do not already have docker set up:***
+1. *chmod +x install_docker_linux.sh*
+2. *sudo ./install_docker_linux.sh*
+
+***Next:***
+1. *chmod +x setup.sh*
+2. *sudo ./setup.sh* (this will create an untrusted ssl cert and key, generate a macro file for the server and port you specify (will drop the macro in macro.txt locally), build macc2-docker, and run the MacC2 server inside of macc2-container in interactive mode)
+3. when prompted, enter the IP/hostname of the MacC2 server
+![Image](pic30.png)
+4. when prompted, enter the port that the MacC2 server will listen on
+![Image](pic31.png)
+5. A hex encoded macro payload will be dropped locally in a file named macro.txt that is configured to connect to your MacC2 server on the hostname/IP and port you specified.
+![Image](pic32.png)
+6. Docker will install the aiohttp python3 dependency, build macc2-docker, and will run the MacC2 Server in a container named macc2-container. Once finished the MacC2 server will listen on the specified port:
+![Image](pic33.png)
+
+You can then either copy the MacC2_client.py file over to the client and execute for a callback or you can import the macro.txt macro into an Office document and "Enable Macros" when opening for a callback on the client. 
+
+------
+**_Running Locally (Without Using Docker)_**
+If you opt to not use docker, you can set up the server locally using the steps below:
 
 Since the MacC2 server uses the aiohttp library for communications, you will need to install aiohttp first:
 
-_*pip install aiohttp (if you encounter an error ensure that pip is pointing to python3, since aiohttp is a python3 library): python3 -m pip install --upgrade --force pip*_
+_*pip install aiohttp (if you encounter an error ensure that pip is pointing to python3, since aiohttp is a python3 library): 
 
-----------
-
-More info below:
+python3 -m pip install --upgrade --force pip*_
 
 **_On C2 Server:_**
 1. Set up ssl (note: use a key size of at least 2048)
