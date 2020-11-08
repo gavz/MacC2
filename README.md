@@ -89,7 +89,8 @@ Functions of Note:
 
 `>>> runjxa <url_to_JXA_.js_payload>`
 
-**- Note: If you gain access using the MS Office macro, then the persistence method will not work due to sandboxing. The files will still be dropped and the login item will still be inserted but upon reboot the quarantine attribute prevents the persistence from executing.**
+**Note: If you gain access using the MS Office macro, then the persistence method will not work due to sandboxing. The files will still be dropped and the login item will still be inserted but upon reboot the quarantine attribute prevents the persistence from executing**
+
 ----------
 
 ## Additional Info ##
