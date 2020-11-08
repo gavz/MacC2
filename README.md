@@ -4,15 +4,15 @@ MacC2 is a macOS post exploitation tool written in python that uses Objective C 
 You can set up the server locally or you can use the docker setup I have included in this repo. Instructions below:
 
 -----
-**_Docker Instructions_**
+## Instructions for Running Using Docker: ##
 
 ***If you do not already have docker set up:***
-1. *chmod +x install_docker_linux.sh*
-2. *sudo ./install_docker_linux.sh*
+1. > *chmod +x install_docker_linux.sh*
+2. > *sudo ./install_docker_linux.sh*
 
 ***Next:***
-1. *chmod +x setup.sh*
-2. *sudo ./setup.sh* (this will create an untrusted ssl cert and key, generate a macro file for the server and port you specify (will drop the macro in macro.txt locally), build macc2-docker, and run the MacC2 server inside of macc2-container in interactive mode)
+1. > *chmod +x setup.sh*
+2. > *sudo ./setup.sh* **(this will create an untrusted ssl cert and key, generate a macro file for the server and port you specify (will drop the macro in macro.txt locally), build macc2-docker, and run the MacC2 server inside of macc2-container in interactive mode)**
 3. when prompted, enter the IP/hostname of the MacC2 server
 ![Image](pic30.png)
 4. when prompted, enter the port that the MacC2 server will listen on
@@ -26,29 +26,31 @@ You can set up the server locally or you can use the docker setup I have include
 You can then either copy the MacC2_client.py file over to the client and execute for a callback or you can import the macro.txt macro into an Office document and "Enable Macros" when opening for a callback on the client. 
 
 ------
-**_Running Locally (Without Using Docker)_**
+## Running Locally (Without Using Docker) ##
 If you opt to not use docker, you can set up the server locally using the steps below:
 
 Since the MacC2 server uses the aiohttp library for communications, you will need to install aiohttp first:
 
-_*pip install aiohttp (if you encounter an error ensure that pip is pointing to python3, since aiohttp is a python3 library): 
+> _*pip install aiohttp **(if you encounter an error ensure that pip is pointing to python3, since aiohttp is a python3 library)**: 
 
-python3 -m pip install --upgrade --force pip*_
+> python3 -m pip install --upgrade --force pip*_
 
 **_On C2 Server:_**
 1. Set up ssl (note: use a key size of at least 2048)
 
 If you do not have your own cert, you can use the following to generate a self signed cert:
 
-- 1: openssl req -new -newkey rsa:2048 -nodes -out ca.csr -keyout ca.key
+- 1: > **openssl req -new -newkey rsa:2048 -nodes -out ca.csr -keyout ca.key**
 
-- 2: openssl x509 -trustout -signkey ca.key -days 365 -req -in ca.csr -out ca.pem
+- 2: > **openssl x509 -trustout -signkey ca.key -days 365 -req -in ca.csr -out ca.pem**
 
-_*note: the server script is hard-coded to use ca.pem and ca.key, so keep these names the same for now, or change the code appropriately_
+**note: the server script is hard-coded to use ca.pem and ca.key, so keep these names the same for now, or change the code appropriately**
 
 2. Use macro_generator.py to create the MacC2 scripts with the server's IP/domain and port. macro_generator.py also builds a macro (macro.txt) that uses hex encoding to run MacC2. You can copy and paste the contents of macro.text into an MS Office document:
 
-Usage: python3 macro_generatory.py -s [C2 Server IP/domain] -p [C2 Server Port]
+Usage: 
+
+> python3 macro_generatory.py -s [C2 Server IP/domain] -p [C2 Server Port]
 
 -Example:
 
@@ -62,7 +64,8 @@ Usage: python3 macro_generatory.py -s [C2 Server IP/domain] -p [C2 Server Port]
 **_On Client Side (the target mac host):_**
 1. If you desire to not be limited by the mac sandbox and want more functionality, you may opt to copy the MacC2_client.py script to the client (assuming you have access).
 
-2. On the client, run the MacC2_client.py script: "% python MacC2_client.py"
+2. On the client, run the MacC2_client.py script: 
+> python MacC2_client.py
 ![Image](pic5.png)
 
 3. On the server, you will see an inbound connection. Example below:
