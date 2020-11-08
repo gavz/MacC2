@@ -21,6 +21,7 @@ You can set up the server locally or you can use the docker setup I have include
 ![Image](pic32.png)
 6. Docker will install the aiohttp python3 dependency, build macc2-docker, and will run the MacC2 Server in a container named macc2-container. Once finished the MacC2 server will listen on the specified port:
 ![Image](pic33.png)
+7. You can run *docker ps* and validate that the MacC2 server is running (you will see a container named macc2-container listed there)
 
 You can then either copy the MacC2_client.py file over to the client and execute for a callback or you can import the macro.txt macro into an Office document and "Enable Macros" when opening for a callback on the client. 
 
