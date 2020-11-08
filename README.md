@@ -7,8 +7,8 @@ You can set up the server locally or you can use the docker setup I have include
 ## Instructions for Running Using Docker: ##
 
 ***If you do not already have docker set up:***
-1. > *chmod +x install_docker_linux.sh*
-2. > *sudo ./install_docker_linux.sh*
+1. `chmod +x install_docker_linux.sh`
+2. `sudo ./install_docker_linux.sh`
 
 ***Next:***
 1. > *chmod +x setup.sh*
