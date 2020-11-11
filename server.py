@@ -344,8 +344,7 @@ async def Prompt(request):
         
         print("\033[92m[+] Prompt results:\033[0m")
         print(promptdata2)
-        
-        print("NOTE: The button the user clicked is noted by the 'bhit' value and the password entered is in the 'ttxt' value. Otherwise the user cancelled.")
+       
         text = 'OK'
         return web.Response(text=text)
     else:
