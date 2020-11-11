@@ -23,6 +23,10 @@ You can set up the server locally or you can use the docker setup I have include
 ![Image](pic33.png)
 7. You can run *docker ps* and validate that the MacC2 server is running (you will see a container named macc2-container listed there)
 
+**Note: Since I am using a static container name (macc2-container), if you run this setup more than once on the same server, you will need to delete the macc2-container name after each use or else you will get an error "The container name "/macc2-container" is already in use by container". You can run the command below to delete the macc2-container after each run:**
+
+> docker rm macc2-container
+
 You can then either copy the MacC2_client.py file over to the client and execute for a callback or you can import the macro.txt macro into an Office document and "Enable Macros" when opening for a callback on the client. 
 
 ------
