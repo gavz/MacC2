@@ -126,7 +126,7 @@ MacC2 does NOT include any sandbox escapes and therefore all functions do not wo
 
 - addresses
 
-- prompt (the prompt is hidden under the python tray icon though...)
+- prompt
 
 - clipboard
 
