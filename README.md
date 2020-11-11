@@ -128,6 +128,8 @@ MacC2 does NOT include any sandbox escapes and therefore all functions do not wo
 
 - systeminfo
 
+- persist: MacC2 can drop files to disk from a sandboxed macro payload. However, upon reboot the persistence will not execute due to the quarantine attribue on the dropped files.
+
 - addresses
 
 - prompt
